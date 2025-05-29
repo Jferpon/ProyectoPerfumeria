@@ -20,6 +20,7 @@ import javax.persistence.Table;
 @Table(name = "detallePerfume")
 @NamedQueries({
     @NamedQuery(name = "DetallePerfume.findAll", query = "SELECT d FROM detallePerfume d"),
+    @NamedQuery(name = "Disenador.findById", query = "SELECT d FROM detatallePerfume d WHERE d.idDetalle = :idDetalle"),
 })
 public class DetallePerfume implements Serializable {
 

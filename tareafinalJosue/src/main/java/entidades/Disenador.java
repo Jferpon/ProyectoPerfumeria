@@ -26,9 +26,9 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "disenadores")
 @NamedQueries({
-        @NamedQuery(name = "Disenador.findAll", query = "SELECT d FROM Disenador d"),
-        @NamedQuery(name = "Disenador.findById", query = "SELECT d FROM Disenador d WHERE d.id = :id"),
-        @NamedQuery(name = "Disenador.findByNombre", query = "SELECT d FROM Disenador d WHERE d.nombre = :nombre")
+        @NamedQuery(name = "Disenador.findAll", query = "SELECT d FROM disenadores d"),
+        @NamedQuery(name = "Disenador.findById", query = "SELECT d FROM disenadores d WHERE d.id = :id"),
+        @NamedQuery(name = "Disenador.findByNombre", query = "SELECT d FROM disenadores d WHERE d.nombre = :nombre")
 })
 public class Disenador implements Serializable {
 
