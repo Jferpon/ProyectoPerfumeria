@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -17,6 +19,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "perfumes")
+@NamedQueries({
+    @NamedQuery(name = "Perfume.findAll", query = "SELECT d FROM perfumes d"),
+    @NamedQuery(name = "Perfume.findById", query = "SELECT d FROM perfumes d WHERE d.idPerfume = :idPerfume"),
+    @NamedQuery(name = "Perfume.findByNombre", query = "SELECT d FROM Disenador d WHERE d.nombrePerfume = :nombrePerfume")
+})
 public class Perfume implements Serializable {
 
     @Id

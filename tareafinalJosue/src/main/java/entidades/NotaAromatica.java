@@ -1,11 +1,14 @@
 
 package entidades;
 
+import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 
@@ -15,7 +18,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "notasAromaticas")
-public class NotaAromatica {
+@NamedQueries({
+    @NamedQuery(name = "NotaAromatica.findAll", query = "SELECT d FROM notasAromaticas d"),
+    @NamedQuery(name = "NotaAromatica.findById", query = "SELECT d FROM notasAromaticas d WHERE d.idNota = :idNota"),
+    @NamedQuery(name = "NotaAromatica.findByOlor", query = "SELECT d FROM notasAromaticas d WHERE d.olor = :olor")
+})
+public class NotaAromatica implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -16,6 +18,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "detallePerfume")
+@NamedQueries({
+    @NamedQuery(name = "DetallePerfume.findAll", query = "SELECT d FROM detallePerfume d"),
+})
 public class DetallePerfume implements Serializable {
 
     @Id
