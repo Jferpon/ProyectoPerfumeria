@@ -26,9 +26,9 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "disenadores")
 @NamedQueries({
-    @NamedQuery(name = "Disenador.findAll", query = "SELECT d FROM Disenador d"),
-    @NamedQuery(name = "Disenador.findById", query = "SELECT d FROM Disenador d WHERE d.id = :id"),
-    @NamedQuery(name = "Disenador.findByNombre", query = "SELECT d FROM Disenador d WHERE d.nombre = :nombre")
+        @NamedQuery(name = "Disenador.findAll", query = "SELECT d FROM Disenador d"),
+        @NamedQuery(name = "Disenador.findById", query = "SELECT d FROM Disenador d WHERE d.id = :id"),
+        @NamedQuery(name = "Disenador.findByNombre", query = "SELECT d FROM Disenador d WHERE d.nombre = :nombre")
 })
 public class Disenador implements Serializable {
 
@@ -134,14 +134,15 @@ public class Disenador implements Serializable {
         this.perfumeCollection.remove(perfume);
         perfume.setDisenador(null);
     }
-    
-@Override
-public String toString() {
-    String tmp = "";
-    for (Perfume perfume : perfumeCollection) {
-        tmp += perfume + "\n";
+
+    @Override
+    public String toString() {
+        String tmp = "";
+        for (Perfume perfume : perfumeCollection) {
+            tmp += perfume + "\n";
+        }
+        return "Disenador{" + "id=" + id + ", nombre=" + nombre + ", ape1=" + ape1 + ", ape2=" + ape2
+                + ", fecNacimiento=" + fecNacimiento
+                + ", perfumeCollection=\n" + tmp + '}';
     }
-    return "Disenador{" + "id=" + id + ", nombre=" + nombre + ", ape1=" + ape1 + ", ape2=" + ape2 + ", fecNacimiento=" + fecNacimiento
-            + ", perfumeCollection=\n" + tmp + '}';
-}
 }

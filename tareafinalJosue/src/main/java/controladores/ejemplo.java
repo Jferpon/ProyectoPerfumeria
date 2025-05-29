@@ -1,4 +1,4 @@
-package main.java.controladores;
+package controladores;
 
 public class ejemplo {
     public static void main(String[] args) {
