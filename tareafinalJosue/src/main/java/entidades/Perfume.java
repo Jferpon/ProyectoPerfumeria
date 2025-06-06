@@ -4,7 +4,12 @@ import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,12 +27,14 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Perfume.findAll", query = "SELECT d FROM Perfume d"),
     @NamedQuery(name = "Perfume.findById", query = "SELECT d FROM Perfume d WHERE d.idPerfume = :idPerfume"),
+    @NamedQuery(name = "Perfume.findByFkId", query = "SELECT d FROM Perfume d WHERE d.disenador = :disenador"),
     @NamedQuery(name = "Perfume.findByNombre", query = "SELECT d FROM Perfume d WHERE d.nombrePerfume = :nombrePerfume")
 })
 public class Perfume implements Serializable {
 
     @Id
-    @Basic
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "idPerfume")
     private Integer idPerfume;
 
@@ -51,6 +58,10 @@ public class Perfume implements Serializable {
     @Column(name = "cantidadML")
     private Integer cantidadML;
 
+    @Convert(converter = TipoPerfumeConverter.class)
+    @Column(name = "tipoPerfume")
+    private TipoPerfume tipoPerfume;
+
     @ManyToOne
     @JoinColumn(name = "idDisenador")
     private Disenador disenador;
@@ -59,7 +70,6 @@ public class Perfume implements Serializable {
     private Collection<DetallePerfume> detallePerfumeCollection;
 
     // Getters y setters
-
     public Integer getIdPerfume() {
         return idPerfume;
     }
@@ -108,6 +118,14 @@ public class Perfume implements Serializable {
         this.cantidadML = cantidadML;
     }
 
+    public TipoPerfume getTipoPerfume() {
+        return tipoPerfume;
+    }
+
+    public void setTipoPerfume(TipoPerfume tipoPerfume) {
+        this.tipoPerfume = tipoPerfume;
+    }
+
     public Disenador getDisenador() {
         return disenador;
     }
@@ -132,15 +150,16 @@ public class Perfume implements Serializable {
                 tmp += detalle + "\n";
             }
         }
-        return "Perfume{" +
-                "idPerfume=" + idPerfume +
-                ", nombrePerfume=" + nombrePerfume +
-                ", nombreLinea=" + nombreLinea +
-                ", precio=" + precio +
-                ", horasDuracion=" + horasDuracion +
-                ", cantidadML=" + cantidadML +
-                ", disenador=" + (disenador != null ? disenador.getNombre(): "null") +
-                ", detallePerfumeCollection=\n" + tmp +
-                '}';
+        return "Perfume{"
+                + "idPerfume=" + idPerfume
+                + ", nombrePerfume=" + nombrePerfume
+                + ", nombreLinea=" + nombreLinea
+                + ", precio=" + precio
+                + ", horasDuracion=" + horasDuracion
+                + ", cantidadML=" + cantidadML
+                + ", disenador=" + (disenador != null ? disenador.getNombre() : "null")
+                + ", detallePerfumeCollection=\n" + tmp
+                + ", tipoPerfume=" + tipoPerfume
+                + '}';
     }
 }

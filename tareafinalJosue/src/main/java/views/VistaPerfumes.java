@@ -4,18 +4,29 @@
  */
 package views;
 
+import controladores.PerfumeController;
+import entidades.Disenador;
+import entidades.Perfume;
+import entidades.TipoPerfume;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author jferpon
  */
 public class VistaPerfumes extends javax.swing.JDialog {
 
-    /**
-     * Creates new form VistaPerfumes
-     */
-    public VistaPerfumes(java.awt.Frame parent, boolean modal) {
+    private Disenador disenador;
+    private PerfumeController perfumeController = new PerfumeController();
+
+    public VistaPerfumes(java.awt.Frame parent, boolean modal, Disenador disenador) {
         super(parent, modal);
+        this.disenador = disenador;
         initComponents();
+        cargarTablaPerfumes();
+
     }
 
     /**
@@ -34,46 +45,73 @@ public class VistaPerfumes extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTable1.setBackground(new java.awt.Color(51, 51, 51));
+        jTable1.setBackground(new java.awt.Color(255, 255, 255));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Id", "Nombre", "Linea", "Precio", "Duracion", "CantidadMl", "Tipo Perfume"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 100, 670, -1));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 100, 820, -1));
 
-        jLabel2.setFont(new java.awt.Font("URW Bookman", 3, 24)); // NOI18N
+        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel2.setFont(new java.awt.Font("URW Bookman", 3, 36)); // NOI18N
         jLabel2.setText("Perfumes");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 40, 170, 30));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 50, 230, 50));
 
         jButton1.setBackground(new java.awt.Color(0, 102, 102));
         jButton1.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
         jButton1.setText("Añadir Perfume");
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 130, 280, 70));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 120, 280, 70));
 
         jButton2.setBackground(new java.awt.Color(0, 102, 102));
         jButton2.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
         jButton2.setText("Actualizar Perfume");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 230, 290, 80));
 
         jButton3.setBackground(new java.awt.Color(0, 102, 102));
         jButton3.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
         jButton3.setText("Eliminar Perfume");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 360, 270, 80));
+
+        jButton4.setBackground(new java.awt.Color(0, 102, 102));
+        jButton4.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
+        jButton4.setText("Ver Olores");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 530, 280, 70));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/perfumes.png"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-70, -10, -1, -1));
@@ -92,9 +130,244 @@ public class VistaPerfumes extends javax.swing.JDialog {
         pack();
     }// </editor-fold>                        
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        try {
+            String nombre = JOptionPane.showInputDialog(this, "Nombre del perfume:");
+            if (nombre == null || nombre.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nombre obligatorio");
+                return;
+            }
+
+            String nombreLinea = JOptionPane.showInputDialog(this, "Nombre de la línea:");
+            if (nombreLinea == null) {
+                return;
+            }
+
+            String precioStr = JOptionPane.showInputDialog(this, "Precio:");
+            double precio;
+            try {
+                precio = Double.parseDouble(precioStr);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Precio inválido");
+                return;
+            }
+
+            String horasStr = JOptionPane.showInputDialog(this, "Horas de duración:");
+            int horasDuracion;
+            try {
+                horasDuracion = Integer.parseInt(horasStr);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Horas duración inválidas");
+                return;
+            }
+
+            String cantidadStr = JOptionPane.showInputDialog(this, "Cantidad en ML:");
+            int cantidadML;
+            try {
+                cantidadML = Integer.parseInt(cantidadStr);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Cantidad ML inválida");
+                return;
+            }
+
+            // Selección de TipoPerfume
+            TipoPerfume tipoSeleccionado = (TipoPerfume) JOptionPane.showInputDialog(
+                    this,
+                    "Selecciona tipo de perfume:",
+                    "Tipo Perfume",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    TipoPerfume.values(),
+                    TipoPerfume.EAU_DE_TOILETTE);
+
+            if (tipoSeleccionado == null) {
+                JOptionPane.showMessageDialog(this, "Debes seleccionar un tipo de perfume.");
+                return;
+            }
+
+            Perfume nuevo = new Perfume();
+            nuevo.setNombrePerfume(nombre);
+            nuevo.setNombreLinea(nombreLinea);
+            nuevo.setPrecio(precio);
+            nuevo.setHorasDuracion(horasDuracion);
+            nuevo.setCantidadML(cantidadML);
+            nuevo.setTipoPerfume(tipoSeleccionado);
+            nuevo.setDisenador(disenador);
+
+            perfumeController.create(nuevo);
+            cargarTablaPerfumes();
+            JOptionPane.showMessageDialog(this, "Perfume añadido con éxito");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al añadir perfume: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+
+    }                                        
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        int filaSeleccionada = jTable1.getSelectedRow();
+        int columnaSeleccionada = jTable1.getSelectedColumn();
+
+        if (filaSeleccionada == -1 || columnaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona una celda para actualizar.");
+            return;
+        }
+
+        int id = (int) jTable1.getValueAt(filaSeleccionada, 0);
+        Perfume p = perfumeController.findById(id);
+        if (p == null) {
+            JOptionPane.showMessageDialog(this, "Perfume no encontrado");
+            return;
+        }
+
+        switch (columnaSeleccionada) {
+            case 1: // Nombre perfume
+                String nuevoNombre = JOptionPane.showInputDialog(this, "Nuevo nombre:", p.getNombrePerfume());
+                if(nuevoNombre== null) return;
+                if (nuevoNombre != null) {
+                    p.setNombrePerfume(nuevoNombre);
+                }
+                break;
+            case 2: // Nombre línea
+                String nuevaLinea = JOptionPane.showInputDialog(this, "Nuevo nombre de línea:", p.getNombreLinea());
+                if(nuevaLinea== null) return;
+                if (nuevaLinea != null) {
+                    p.setNombreLinea(nuevaLinea);
+                }
+                break;
+            case 3: // Precio
+                String nuevoPrecioStr = JOptionPane.showInputDialog(this, "Nuevo precio:", p.getPrecio());
+                if(nuevoPrecioStr== null) return;
+                try {
+                    p.setPrecio(Double.parseDouble(nuevoPrecioStr));
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Precio inválido");
+                    return;
+                }
+                break;
+            case 4: // Horas de duración
+                String nuevasHorasStr = JOptionPane.showInputDialog(this, "Nuevas horas de duración:", p.getHorasDuracion());
+                if(nuevasHorasStr== null) return;
+                try {
+                    p.setHorasDuracion(Integer.parseInt(nuevasHorasStr));
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Valor inválido");
+                    return;
+                }
+                break;
+            case 5: // Cantidad en ML
+                String nuevaCantidadStr = JOptionPane.showInputDialog(this, "Nueva cantidad en ML:", p.getCantidadML());
+                if(nuevaCantidadStr== null) return;
+                try {
+                    p.setCantidadML(Integer.parseInt(nuevaCantidadStr));
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Cantidad inválida");
+                    return;
+                }
+                break;
+            case 6: // Tipo perfume
+                TipoPerfume nuevoTipo = (TipoPerfume) JOptionPane.showInputDialog(
+                        this,
+                        "Nuevo tipo de perfume:",
+                        "Tipo Perfume",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        TipoPerfume.values(),
+                        p.getTipoPerfume()
+                );
+                if(nuevoTipo== null) return;
+                if (nuevoTipo != null) {
+                    p.setTipoPerfume(nuevoTipo);
+                }
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "No puedes editar esta columna.");
+                return;
+        }
+
+        perfumeController.update(p);
+        cargarTablaPerfumes();
+        JOptionPane.showMessageDialog(this, "Perfume actualizado");
+    }                                        
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor selecciona un perfume para eliminar");
+            return;
+        }
+
+        int id = (int) jTable1.getValueAt(filaSeleccionada, 0);
+        Perfume p = perfumeController.findById(id);
+        if (p == null) {
+            JOptionPane.showMessageDialog(this, "Perfume no encontrado");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "¿Estás seguro de eliminar el perfume: " + p.getNombrePerfume() + "?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            perfumeController.delete(id);
+            cargarTablaPerfumes();
+            JOptionPane.showMessageDialog(this, "Perfume eliminado con éxito");
+        }
+    }                                        
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+          Perfume perfumeSeleccionado = obtenerPerfumeSeleccionado();
+    if (perfumeSeleccionado != null) {
+        VistaNotas vistaNotas = new VistaNotas(null, true, perfumeSeleccionado);
+        vistaNotas.setVisible(true);
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un diseñador.");
+    }
+    }                                        
+
+    private Perfume obtenerPerfumeSeleccionado() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            return null; // No hay selección
+        }
+        Integer idPerfume = (Integer) jTable1.getValueAt(filaSeleccionada, 0);
+        return perfumeController.findById(idPerfume);
+    }
     /**
      * @param args the command line arguments
      */
+    private void cargarTablaPerfumes() {
+        PerfumeController controller = new PerfumeController();
+
+        List<Perfume> lista = controller.findByDisenador(disenador.getId());
+
+        String[] columnas = {"Id", "Nombre Perfume", "Nombre Línea", "Precio", "Horas Duración", "Cantidad ML", "Tipo Perfume"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        for (Perfume p : lista) {
+            Object[] fila = {
+                p.getIdPerfume(),
+                p.getNombrePerfume(),
+                p.getNombreLinea(),
+                p.getPrecio(),
+                p.getHorasDuracion(),
+                p.getCantidadML(),
+                p.getTipoPerfume() != null ? p.getTipoPerfume().toString().replace('_', ' ') : "No asignado"
+            };
+            modelo.addRow(fila);
+        }
+
+        jTable1.setModel(modelo);
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -120,24 +393,13 @@ public class VistaPerfumes extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                VistaPerfumes dialog = new VistaPerfumes(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
