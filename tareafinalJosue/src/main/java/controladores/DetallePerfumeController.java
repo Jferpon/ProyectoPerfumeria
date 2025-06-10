@@ -1,12 +1,15 @@
 package controladores;
 
 import entidades.DetallePerfume;
+import entidades.NotaAromatica;
+import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
+import javax.persistence.NoResultException;
 /**
  *
  * @author Josué
@@ -55,7 +58,33 @@ public class DetallePerfumeController {
             em.close();
         }
     }
+public List<NotaAromatica> findNotasByIdPerfume(int idPerfume) {
+    EntityManager em = getEntityManager();
+    List<DetallePerfume> detalles = em.createNamedQuery("DetallePerfume.findByIdPerfume", DetallePerfume.class)
+        .setParameter("idPerfume", idPerfume)
+        .getResultList();
 
+    List<NotaAromatica> notas = new ArrayList<>();
+    for (DetallePerfume dp : detalles) {
+        notas.add(dp.getNotaAromatica());
+    }
+
+    return notas;
+}
+
+public DetallePerfume findByPerfumeYNota(int idPerfume, int idNota) {
+     EntityManager em = getEntityManager();
+    try {
+        return em.createNamedQuery("DetallePerfume.findByPerfumeYNota", DetallePerfume.class)
+                 .setParameter("idPerfume", idPerfume)
+                 .setParameter("idNota", idNota)
+                 .getSingleResult();
+    } catch (NoResultException e) {
+        return null;
+    } finally {
+        em.close();
+    }
+}
     /**
      * Devuelve todos los detalles de perfume.
      */
@@ -131,6 +160,8 @@ public class DetallePerfumeController {
             em.close();
         }
     }
+
+
 
     /**
      * Cierra el EntityManagerFactory.

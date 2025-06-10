@@ -1,6 +1,8 @@
 package controladores;
 
+import entidades.DetallePerfume;
 import entidades.NotaAromatica;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -8,8 +10,8 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 /**
- * 
- * 
+ *
+ *
  * @author Josué
  */
 public class NotaAromaticaController {
@@ -27,7 +29,7 @@ public class NotaAromaticaController {
 
     /**
      * Crea una nueva nota aromática en la base de datos.
-     * 
+     *
      * @param nota La nota aromática a crear.
      */
     public void create(NotaAromatica nota) {
@@ -49,7 +51,7 @@ public class NotaAromaticaController {
 
     /**
      * Busca una nota aromática por su ID.
-     * 
+     *
      * @param id El ID de la nota.
      * @return La nota encontrada o null si no existe.
      */
@@ -62,9 +64,23 @@ public class NotaAromaticaController {
         }
     }
 
+    public List<NotaAromatica> findNotasByIdPerfume(int idPerfume) {
+        EntityManager em = getEntityManager();
+        List<DetallePerfume> detalles = em.createNamedQuery("DetallePerfume.findByIdPerfume", DetallePerfume.class)
+                .setParameter("idPerfume", idPerfume)
+                .getResultList();
+
+        List<NotaAromatica> notas = new ArrayList<>();
+        for (DetallePerfume dp : detalles) {
+            notas.add(dp.getNotaAromatica());
+        }
+
+        return notas;
+    }
+
     /**
      * Obtiene todas las notas aromáticas de la base de datos.
-     * 
+     *
      * @return Una lista de notas aromáticas.
      */
     public List<NotaAromatica> findAll() {
@@ -78,7 +94,7 @@ public class NotaAromaticaController {
 
     /**
      * Actualiza una nota aromática existente.
-     * 
+     *
      * @param nota La nota a actualizar.
      */
     public void update(NotaAromatica nota) {
@@ -100,7 +116,7 @@ public class NotaAromaticaController {
 
     /**
      * Elimina una nota aromática por su ID.
-     * 
+     *
      * @param id El ID de la nota a eliminar.
      */
     public void delete(Integer id) {

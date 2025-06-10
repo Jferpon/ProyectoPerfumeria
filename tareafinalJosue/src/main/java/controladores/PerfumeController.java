@@ -1,5 +1,6 @@
 package controladores;
 
+import entidades.Disenador;
 import entidades.Perfume;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -74,6 +75,22 @@ public class PerfumeController {
             em.close();
         }
     }
+    public List<Perfume> findByDisenador(int idDisenador) {
+    EntityManager em = getEntityManager();
+    try {
+        // Buscar el diseñador por id
+        Disenador disenador = em.find(Disenador.class, idDisenador);
+        if (disenador == null) {
+            return java.util.Collections.emptyList();
+        }
+        // Ejecutar la namedQuery con el objeto diseñador
+        return em.createNamedQuery("Perfume.findByFkId", Perfume.class)
+                 .setParameter("disenador", disenador)
+                 .getResultList();
+    } finally {
+        em.close();
+    }
+}
 
     /**
      * Actualiza un perfume existente.

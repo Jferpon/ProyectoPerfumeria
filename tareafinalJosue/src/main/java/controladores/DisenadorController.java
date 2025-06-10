@@ -67,14 +67,14 @@ public class DisenadorController {
      * 
      * @return Una lista de diseñadores.
      */
-    public List<Disenador> findAll() {
-        EntityManager em = getEntityManager();
-        try {
-            return em.createQuery("Disenador.findAll", Disenador.class).getResultList();
-        } finally {
-            em.close();
-        }
+   public List<Disenador> findAll() {
+    EntityManager em = getEntityManager();
+    try {
+        return em.createNamedQuery("Disenador.findAll", Disenador.class).getResultList();
+    } finally {
+        em.close();
     }
+}
 
     /**
      * Actualiza un diseñador existente.

@@ -8,6 +8,8 @@
     <class>entidades.NotaAromatica</class>
     <class>entidades.TipoPerfume</class>
     <class>entidades.TipoPerfumeConverter</class>
+    <class>entidades.TipoNota</class>
+    <class>entidades.TipoNotaConverter</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/BDPerfumeria?serverTimezone=UTC"/>
       <property name="javax.persistence.jdbc.user" value="josue"/>

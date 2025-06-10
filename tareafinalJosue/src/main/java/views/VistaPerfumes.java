@@ -8,6 +8,7 @@ import controladores.PerfumeController;
 import entidades.Disenador;
 import entidades.Perfume;
 import entidades.TipoPerfume;
+import java.util.InputMismatchException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class VistaPerfumes extends javax.swing.JDialog {
 
+    //Cojo le disenador y el controlador para no ir añadiendolo cada vez
     private Disenador disenador;
     private PerfumeController perfumeController = new PerfumeController();
 
@@ -46,6 +48,7 @@ public class VistaPerfumes extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -101,7 +104,7 @@ public class VistaPerfumes extends javax.swing.JDialog {
                 jButton3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 360, 270, 80));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1180, 340, 270, 80));
 
         jButton4.setBackground(new java.awt.Color(0, 102, 102));
         jButton4.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
@@ -112,6 +115,16 @@ public class VistaPerfumes extends javax.swing.JDialog {
             }
         });
         jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 530, 280, 70));
+
+        jButton5.setBackground(new java.awt.Color(0, 102, 102));
+        jButton5.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
+        jButton5.setText("SALIR");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 460, 270, 80));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/perfumes.png"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-70, -10, -1, -1));
@@ -197,9 +210,9 @@ public class VistaPerfumes extends javax.swing.JDialog {
             perfumeController.create(nuevo);
             cargarTablaPerfumes();
             JOptionPane.showMessageDialog(this, "Perfume añadido con éxito");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error al añadir perfume: " + ex.getMessage());
-            ex.printStackTrace();
+        } catch (InputMismatchException ime) {
+            JOptionPane.showMessageDialog(this, "Error al añadir perfume: " + ime.getMessage());
+            ime.printStackTrace();
         }
 
     }                                        
@@ -324,7 +337,15 @@ public class VistaPerfumes extends javax.swing.JDialog {
         VistaNotas vistaNotas = new VistaNotas(null, true, perfumeSeleccionado);
         vistaNotas.setVisible(true);
     } else {
-        javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un diseñador.");
+        javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un perfume.");
+    }
+    }                                        
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // Confirmar antes de salir (opcional)
+    int respuesta = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres salir?", "Salir", JOptionPane.YES_NO_OPTION);
+    if (respuesta == JOptionPane.YES_OPTION) {
+        System.exit(0);
     }
     }                                        
 
@@ -400,6 +421,7 @@ public class VistaPerfumes extends javax.swing.JDialog {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

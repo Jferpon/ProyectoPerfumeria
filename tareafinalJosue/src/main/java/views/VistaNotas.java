@@ -4,6 +4,16 @@
  */
 package views;
 
+import controladores.DetallePerfumeController;
+import controladores.NotaAromaticaController;
+import entidades.DetallePerfume;
+import entidades.NotaAromatica;
+import entidades.Perfume;
+import entidades.TipoNota;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author jferpon
@@ -13,9 +23,16 @@ public class VistaNotas extends javax.swing.JDialog {
     /**
      * Creates new form VistaOlores
      */
-    public VistaNotas(java.awt.Frame parent, boolean modal) {
+    //Tiene en cuenta los perfumes, y actuara añadiendo tanto en detallePerfume y en nota
+    private Perfume perfume; 
+    private DetallePerfumeController detalleController = new DetallePerfumeController();
+    private NotaAromaticaController notaController = new NotaAromaticaController();
+    public VistaNotas(java.awt.Frame parent, boolean modal, Perfume perfume) {
         super(parent, modal);
+        this.perfume = perfume;
         initComponents();
+        cargarTablaNotasAromaticas();
+        
     }
 
     /**
@@ -32,6 +49,7 @@ public class VistaNotas extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -46,41 +64,62 @@ public class VistaNotas extends javax.swing.JDialog {
 
         jButton1.setBackground(new java.awt.Color(0, 102, 102));
         jButton1.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
-        jButton1.setText("Borrar Nota Aromatica");
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 360, 280, 70));
+        jButton1.setText("Añadir Nota Aromatica");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 150, 280, 70));
 
         jButton2.setBackground(new java.awt.Color(0, 102, 102));
         jButton2.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
-        jButton2.setText("Añadir Nota Aromatica");
+        jButton2.setText("Actualizar Nota Aromatica");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 170, 280, 70));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1300, 270, 280, 70));
 
         jButton3.setBackground(new java.awt.Color(0, 102, 102));
         jButton3.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
-        jButton3.setText("Actualizar Nota Aromatica");
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1290, 270, 280, 70));
+        jButton3.setText("Borrar Nota Aromatica");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1300, 370, 280, 70));
 
+        jButton4.setBackground(new java.awt.Color(0, 102, 102));
+        jButton4.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
+        jButton4.setText("SALIR");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1300, 480, 280, 70));
+
+        jTable1.setBackground(new java.awt.Color(255, 255, 255));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "IdNota", "TipoNota", "Olor"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 130, 830, 390));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 90, 520, 390));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/notas.png"))); // NOI18N
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 0, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, -30, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -99,9 +138,185 @@ public class VistaNotas extends javax.swing.JDialog {
     }// </editor-fold>                        
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        // TODO add your handling code here:
+           int filaSeleccionada = jTable1.getSelectedRow();
+    int columnaSeleccionada = jTable1.getSelectedColumn();
+
+    if (filaSeleccionada == -1 || columnaSeleccionada == -1) {
+        JOptionPane.showMessageDialog(this, "Selecciona una celda para actualizar.");
+        return;
+    }
+
+    int id = (int) jTable1.getValueAt(filaSeleccionada, 0);
+    NotaAromatica nota = notaController.findById(id);
+    
+    if (nota == null) {
+        JOptionPane.showMessageDialog(this, "Nota no encontrada.");
+        return;
+    }
+
+    switch (columnaSeleccionada) {
+        case 1: // Tipo Nota
+            TipoNota nuevoTipo = (TipoNota) JOptionPane.showInputDialog(
+                this,
+                "Selecciona nuevo tipo de nota:",
+                "Actualizar Tipo",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                TipoNota.values(),
+                nota.getTipoNota()
+            );
+            if (nuevoTipo == null) return;
+            nota.setTipoNota(nuevoTipo);
+            break;
+
+        case 2: // Olor
+            String nuevoOlor = JOptionPane.showInputDialog(this, "Nuevo olor:", nota.getOlor());
+            if (nuevoOlor == null) return;
+            if (!nuevoOlor.trim().isEmpty()) {
+                nota.setOlor(nuevoOlor.trim());
+            } else {
+                JOptionPane.showMessageDialog(this, "El olor no puede estar vacío.");
+                return;
+            }
+            break;
+
+        default:
+            JOptionPane.showMessageDialog(this, "No puedes editar esta columna.");
+            return;
+    }
+
+    try {
+        notaController.update(nota);
+        cargarTablaNotasAromaticas();
+        JOptionPane.showMessageDialog(this, "Nota actualizada correctamente.");
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error al actualizar la nota: " + e.getMessage());
+    }
     }                                        
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+          try {
+        String olor = JOptionPane.showInputDialog(this, "Introduce el olor:");
+        if (olor == null || olor.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Olor obligatorio");
+            return;
+        }
+
+        entidades.TipoNota tipoSeleccionado = (entidades.TipoNota) JOptionPane.showInputDialog(
+                this,
+                "Selecciona el tipo de nota:",
+                "Tipo Nota",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                entidades.TipoNota.values(),
+                entidades.TipoNota.SALIDA
+        );
+
+        if (tipoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un tipo de nota.");
+            return;
+        }
+
+        // Crea la nota aromática
+        NotaAromatica nuevaNota = new NotaAromatica();
+        nuevaNota.setOlor(olor);
+        nuevaNota.setTipoNota(tipoSeleccionado);
+
+        // Guarda nota aromática primero
+        notaController.create(nuevaNota);
+
+        // Crea y guarda el detallePerfume que une perfume y nota
+        controladores.DetallePerfumeController detalleController = new controladores.DetallePerfumeController();
+        entidades.DetallePerfume detalle = new entidades.DetallePerfume();
+        detalle.setPerfume(perfume);      // tu perfume actual
+        detalle.setNotaAromatica(nuevaNota);
+
+        detalleController.create(detalle);
+
+        cargarTablaNotasAromaticas();
+        JOptionPane.showMessageDialog(this, "Nota Aromática añadida con éxito");
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Error al añadir nota: " + ex.getMessage());
+        ex.printStackTrace();
+    }
+    }                                        
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    int filaSeleccionada = jTable1.getSelectedRow();
+
+    if (filaSeleccionada == -1) {
+        JOptionPane.showMessageDialog(this, "Debes seleccionar una nota para eliminar.");
+        return;
+    }
+
+    int confirmacion = JOptionPane.showConfirmDialog(
+        this,
+        "¿Estás seguro de que deseas eliminar esta nota?",
+        "Confirmar eliminación",
+        JOptionPane.YES_NO_OPTION
+    );
+
+    if (confirmacion == JOptionPane.YES_OPTION) {
+        try {
+            int idNota = (int) jTable1.getValueAt(filaSeleccionada, 0);
+
+            // Busca el detalle que une este perfume con la nota
+            DetallePerfume detalle = detalleController.findByPerfumeYNota(perfume.getIdPerfume(), idNota);
+
+            if (detalle != null) {
+                detalleController.delete(detalle.getIdDetalle()); // Elimina el detalle
+            }
+
+            //  Elimina la nota aromática
+            notaController.delete(idNota);
+
+            //  Refresca la  tabla
+            cargarTablaNotasAromaticas();
+
+            JOptionPane.showMessageDialog(this, "Nota eliminada correctamente.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al eliminar nota: " + e.getMessage());
+        }
+    }
+    }                                        
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+       // Confirmar antes de salir (opcional)
+    int respuesta = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres salir?", "Salir", JOptionPane.YES_NO_OPTION);
+    if (respuesta == JOptionPane.YES_OPTION) {
+        System.exit(0);
+    }
+    }                                        
+private void cargarTablaNotasAromaticas() {
+    try {
+        NotaAromaticaController controller = new NotaAromaticaController();
+        List<NotaAromatica> lista = controller.findNotasByIdPerfume(perfume.getIdPerfume());
+
+        String[] columnas = {"Id Nota", "Tipo Nota", "Olor"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        for (NotaAromatica nota : lista) {
+            Object[] fila = {
+                nota.getIdNota(),
+                nota.getTipoNota(),
+                nota.getOlor()
+            };
+            modelo.addRow(fila);
+        }
+
+        jTable1.setModel(modelo);
+    } catch (Exception e) {
+        e.printStackTrace(); // Para ver el error real en consola
+        JOptionPane.showMessageDialog(this, "Error al cargar notas: " + e.getMessage());
+    }
+}
     /**
      * @param args the command line arguments
      */
@@ -130,25 +345,13 @@ public class VistaNotas extends javax.swing.JDialog {
         //</editor-fold>
         //</editor-fold>
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                VistaNotas dialog = new VistaNotas(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

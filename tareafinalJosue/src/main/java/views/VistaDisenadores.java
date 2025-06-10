@@ -6,6 +6,7 @@ package views;
 
 import controladores.DisenadorController;
 import entidades.Disenador;
+import java.util.InputMismatchException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -23,6 +24,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
     public VistaDisenadores(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Cargo la Tabla Disenadores
         cargarTablaDisenadores();
     }
 
@@ -40,6 +42,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
@@ -77,7 +80,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
                 jButton3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 330, 340, 70));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 300, 340, 70));
 
         jButton4.setBackground(new java.awt.Color(0, 153, 153));
         jButton4.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
@@ -88,6 +91,16 @@ public class VistaDisenadores extends javax.swing.JDialog {
             }
         });
         jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 450, 200, 60));
+
+        jButton5.setBackground(new java.awt.Color(0, 102, 102));
+        jButton5.setFont(new java.awt.Font("URW Bookman", 3, 14)); // NOI18N
+        jButton5.setText("SALIR");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 430, 340, 70));
 
         jTable1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -148,7 +161,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
                 return;
             }
 
-            // Convertir String a java.util.Date con SimpleDateFormat
+            // Convertir String a Date 
             java.text.SimpleDateFormat formatoFecha = new java.text.SimpleDateFormat("dd/MM/yyyy");
             java.util.Date fechaNacimiento;
             try {
@@ -170,9 +183,9 @@ public class VistaDisenadores extends javax.swing.JDialog {
 
             JOptionPane.showMessageDialog(this, "Diseñador añadido con éxito");
 
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error al añadir diseñador: " + ex.getMessage());
-            ex.printStackTrace();
+        } catch (InputMismatchException ime) {
+            JOptionPane.showMessageDialog(this, "Error al añadir diseñador: " + ime.getMessage());
+            ime.printStackTrace();
         }
     }                                        
 
@@ -214,7 +227,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
         return;
     }
 
-    int id = (int) jTable1.getValueAt(filaSeleccionada, 0); // siempre la columna 0 es id
+    int id = (int) jTable1.getValueAt(filaSeleccionada, 0); // la columna 0 es id el cual utilizaremos en el controller
 
     DisenadorController controller = new DisenadorController();
     Disenador d = controller.findById(id);
@@ -234,6 +247,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
 
         case 3: // Columna Fecha Nacimiento
             java.text.SimpleDateFormat formatoFecha = new java.text.SimpleDateFormat("dd/MM/yyyy");
+            //Formateador de fechas
             String fechaActualStr = formatoFecha.format(d.getFecNacimiento());
             String nuevaFechaStr = JOptionPane.showInputDialog(this, "Nueva Fecha Nacimiento (dd/MM/yyyy):", fechaActualStr);
             if (nuevaFechaStr == null) return;
@@ -245,6 +259,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
             }
             break;
 
+            //Controla si eliges la 0 es decir id o haces cualquier cosa que no sea 1 2 o 3 en columnas
         default:
             JOptionPane.showMessageDialog(this, "No puedes editar esta columna.");
             return;
@@ -255,6 +270,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
     JOptionPane.showMessageDialog(this, "Diseñador actualizado");
     }                                        
 
+    //Metodo para mirar los perfumes de un disenador, abre el dialogo segun el disenador Seleccionado 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
   
 
@@ -266,6 +282,14 @@ public class VistaDisenadores extends javax.swing.JDialog {
         javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un diseñador.");
     }
 
+    }                                        
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // Confirmar antes de salir (opcional)
+    int respuesta = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres salir?", "Salir", JOptionPane.YES_NO_OPTION);
+    if (respuesta == JOptionPane.YES_OPTION) {
+        System.exit(0);
+    }
     }                                        
 
     private void cargarTablaDisenadores() {
@@ -351,6 +375,7 @@ public class VistaDisenadores extends javax.swing.JDialog {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
