@@ -8,17 +8,16 @@ package entidades;
  *
  * @author jferpon
  */
-
 //Clase o entidad Enum para controlar el tipo de dato dentro de la base de datos que es enum
-public enum TipoPerfume {
-    EAU_DE_TOILETTE("eau de toilette"),
-    EAU_DE_PARFUM("eau de parfum"),
-    PARFUM("parfum"),
-    ELIXIR("elixir");
+public enum TipoNota {
+    SALIDA("salida"),
+    CORAZON("corazon"),
+    BASE("base");
 
     private final String valor;
 
-    TipoPerfume(String valor) {
+    //Constructor con parametros al ser final 
+    private TipoNota(String valor) {
         this.valor = valor;
     }
 
@@ -26,14 +25,16 @@ public enum TipoPerfume {
         return valor;
     }
 
-   //Mismo metodo aplicado en TipoNota pero orientado al Perfume
-    public static TipoPerfume coversorEnum(String texto) {
-        if (texto == null) return null;
-        for (TipoPerfume tipo : TipoPerfume.values()) {
+    //Convierte el texto o String a un dato enum segun lo creado
+    public static TipoNota conversorEnum(String texto) {
+        if (texto == null) {
+            return null;
+        }
+        for (TipoNota tipo : TipoNota.values()) {
             if (tipo.getValor().equalsIgnoreCase(texto)) {
                 return tipo;
             }
         }
-        return null; 
+        return null;
     }
 }

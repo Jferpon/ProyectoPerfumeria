@@ -13,21 +13,21 @@ import javax.persistence.Converter;
  */
 //Necesito hacer este metodo o clase entidad utilizando converter para solucionar los problemas que 
 //tuve con el enum
-@Converter(autoApply = true)
-public class TipoPerfumeConverter implements AttributeConverter<TipoPerfume, String> {
+@Converter(autoApply = false)
+public class TipoNotaConverter implements AttributeConverter<TipoNota, String> {
 
+    
     //Son metodos de superclase que tuve que buscar no puedo cambiar el nombre
     
-    //Lo convierte a una columna en este caso segun el enum TipoPerfume
+    //Lo convierte a una columna en este caso segun el enum TipoNota
     @Override
-    public String convertToDatabaseColumn(TipoPerfume tipo) {
-        return tipo != null ? tipo.getValor(): null;
+    public String convertToDatabaseColumn(TipoNota tipo) {
+        return tipo != null ? tipo.getValor() : null;
     }
 
     //Lo convierte a un atributo para la entidad NotaAromatica
     @Override
-    public TipoPerfume convertToEntityAttribute(String dbData) {
-        if (dbData == null) return null;
-        return TipoPerfume.coversorEnum(dbData); 
+    public TipoNota convertToEntityAttribute(String dbData) {
+        return TipoNota.conversorEnum(dbData);
     }
 }

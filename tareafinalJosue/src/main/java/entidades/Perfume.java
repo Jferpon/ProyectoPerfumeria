@@ -1,8 +1,10 @@
 package entidades;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -24,6 +26,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "perfumes")
+//NamedQueries que encuentran todo, encuentran segun Id, encuentran segun el idDisenador y encuentran segun nombre
 @NamedQueries({
     @NamedQuery(name = "Perfume.findAll", query = "SELECT d FROM Perfume d"),
     @NamedQuery(name = "Perfume.findById", query = "SELECT d FROM Perfume d WHERE d.idPerfume = :idPerfume"),
@@ -32,6 +35,7 @@ import javax.persistence.Table;
 })
 public class Perfume implements Serializable {
 
+    //Declaracion de atributos encapsulados y relaciones entre la tabla intermedia y la de disenadores
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -66,10 +70,28 @@ public class Perfume implements Serializable {
     @JoinColumn(name = "idDisenador")
     private Disenador disenador;
 
-    @OneToMany(mappedBy = "perfume")
+    @OneToMany(mappedBy = "perfume", cascade = CascadeType.REMOVE, orphanRemoval = true )
     private Collection<DetallePerfume> detallePerfumeCollection;
 
-    // Getters y setters
+    //Constructores, por defecto y con parametros
+    public Perfume() {
+        this.detallePerfumeCollection = new ArrayList<>();
+    }
+
+    public Perfume(Integer idPerfume, String nombrePerfume, String nombreLinea, Double precio, Integer horasDuracion, Integer cantidadML, TipoPerfume tipoPerfume, Disenador disenador, Collection<DetallePerfume> detallePerfumeCollection) {
+        this.idPerfume = idPerfume;
+        this.nombrePerfume = nombrePerfume;
+        this.nombreLinea = nombreLinea;
+        this.precio = precio;
+        this.horasDuracion = horasDuracion;
+        this.cantidadML = cantidadML;
+        this.tipoPerfume = tipoPerfume;
+        this.disenador = disenador;
+        this.detallePerfumeCollection = new ArrayList<>();
+    }
+
+    
+    
     public Integer getIdPerfume() {
         return idPerfume;
     }

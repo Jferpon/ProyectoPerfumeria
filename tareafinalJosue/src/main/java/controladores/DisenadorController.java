@@ -105,22 +105,21 @@ public class DisenadorController {
      */
     public void delete(Integer id) {
         EntityManager em = getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            Disenador disenador = em.find(Disenador.class, id);
-            if (disenador != null) {
-                em.remove(disenador);
-            }
-            tx.commit();
-        } catch (Exception ex) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
-            throw new RuntimeException("Hubo un error al borrar un disenador", ex);
-        } finally {
-            em.close();
-        }
+    try {
+        em.getTransaction().begin();
+        Disenador d = em.find(Disenador.class, id);
+
+        // Cargar explícitamente los perfumes si no están cargados
+        d.getPerfumeCollection().size(); // fuerza la carga de perfumes
+
+        em.remove(d); // gracias al cascade, también borra sus perfumes
+        em.getTransaction().commit();
+    } catch (Exception e) {
+        em.getTransaction().rollback();
+        e.printStackTrace();
+    } finally {
+        em.close();
+    }
     }
 
     /**

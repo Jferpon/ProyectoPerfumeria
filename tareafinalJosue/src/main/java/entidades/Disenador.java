@@ -25,6 +25,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "disenadores")
+//Tengo las namedQuery que encuentran todo, encuentran segun id
 @NamedQueries({
         @NamedQuery(name = "Disenador.findAll", query = "SELECT d FROM Disenador d"),
         @NamedQuery(name = "Disenador.findById", query = "SELECT d FROM Disenador d WHERE d.id = :id"),
@@ -34,6 +35,8 @@ public class Disenador implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //Declaro las varibales con su relacion OneToMany con cascada en la coleccion de perfumes
+    //Atributos encapsulados
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -57,9 +60,11 @@ public class Disenador implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fecNacimiento;
 
-    @OneToMany(mappedBy = "disenador", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "disenador", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Perfume> perfumeCollection;
 
+    
+    //Constructores por defecto y con parametros
     public Disenador() {
         this.perfumeCollection = new ArrayList<>();
     }
@@ -72,7 +77,6 @@ public class Disenador implements Serializable {
         this.perfumeCollection = new ArrayList<>();
     }
 
-    // Getters y Setters
 
     public Integer getId() {
         return id;
@@ -125,6 +129,7 @@ public class Disenador implements Serializable {
         }
     }
 
+    //Añado y borro de la coleccion segun los perfumes 
     public void addPerfume(Perfume perfume) {
         this.perfumeCollection.add(perfume);
         perfume.setDisenador(this);

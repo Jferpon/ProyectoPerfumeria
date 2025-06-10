@@ -268,9 +268,6 @@ public class VistaNotas extends javax.swing.JDialog {
                 detalleController.delete(detalle.getIdDetalle()); // Elimina el detalle
             }
 
-            //  Elimina la nota aromática
-            notaController.delete(idNota);
-
             //  Refresca la  tabla
             cargarTablaNotasAromaticas();
 
