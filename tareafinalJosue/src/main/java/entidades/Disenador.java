@@ -29,7 +29,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
         @NamedQuery(name = "Disenador.findAll", query = "SELECT d FROM Disenador d"),
         @NamedQuery(name = "Disenador.findById", query = "SELECT d FROM Disenador d WHERE d.id = :id"),
-        @NamedQuery(name = "Disenador.findByNombre", query = "SELECT d FROM Disenador d WHERE d.nombre = :nombre")
+        @NamedQuery(name = "Disenador.findByNombre", query = "SELECT d FROM Disenador d WHERE d.nombre = :nombre")   
 })
 public class Disenador implements Serializable {
 
@@ -60,6 +60,7 @@ public class Disenador implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fecNacimiento;
 
+    //Hago las operaciones en cascada y borro tambien a sus hijos 
     @OneToMany(mappedBy = "disenador", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Perfume> perfumeCollection;
 

@@ -110,9 +110,9 @@ public class DisenadorController {
         Disenador d = em.find(Disenador.class, id);
 
         // Cargar explícitamente los perfumes si no están cargados
-        d.getPerfumeCollection().size(); // fuerza la carga de perfumes
+        d.getPerfumeCollection().size();
 
-        em.remove(d); // gracias al cascade, también borra sus perfumes
+        em.remove(d); 
         em.getTransaction().commit();
     } catch (Exception e) {
         em.getTransaction().rollback();
